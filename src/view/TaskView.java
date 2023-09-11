@@ -7,6 +7,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,23 +35,23 @@ public class TaskView {
     public JButton deleteButton = new JButton();
     public JButton chooseButton = new JButton();
     private JList list = new JList(tasksList);
-    public void printTasksList(HashMap<Integer, Task> tasks){
+    public void printTasksList(HashMap<Integer, Task> tasks) {
         tasks.forEach((id, item) -> {
-            tasksList.addElement(item.getId() + " | "+item.getName()+" | "+item.getDescription()+" | "+item.getState()+" | "+item.getDate());
+            tasksList.addElement(item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | " + item.getState() + " | " + item.getDate());
         });
 
         listPanel.setLayout(null);
         buttonPanel.setLayout(null);
 
-        listPanel.setBounds(100,30,this.frameWidth-(this.frameWidth/3),500);
-        buttonPanel.setBounds(100,500,700,200);
+        listPanel.setBounds(100, 30, this.frameWidth - (this.frameWidth / 3), 500);
+        buttonPanel.setBounds(100, 500, 700, 200);
 
         addButton.setText("Přidat úkol");
         deleteButton.setText("Odebrat úkol");
         chooseButton.setText("Vybrat úkol");
-        addButton.setBounds(200,600,150,70);
-        deleteButton.setBounds(400,600,150,70);
-        chooseButton.setBounds(600,600,150,70);
+        addButton.setBounds(200, 600, 150, 70);
+        deleteButton.setBounds(400, 600, 150, 70);
+        chooseButton.setBounds(600, 600, 150, 70);
         addButton.setBackground(new Color(39, 40, 41));
         deleteButton.setBackground(new Color(39, 40, 41));
         chooseButton.setBackground(new Color(39, 40, 41));
@@ -63,22 +65,52 @@ public class TaskView {
         deleteButton.setEnabled(false);
 
         list.setFixedCellHeight(30);
-        list.setBounds(50,50, listPanel.getWidth(),listPanel.getHeight());
+        list.setBounds(50, 50, listPanel.getWidth(), listPanel.getHeight());
+
+        /*list.addListSelectionListener(e -> {
+            int id = Integer.parseInt(list.getSelectedValue().toString().split(" | ")[0]);
+
+            setTaskId(id);
+            setListTaskId(e.getLastIndex());
+
+            chooseButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        });*/
+
+        /*list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 1){
+                    JList target = (JList) e.getSource();
+                    int index = target.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        Object item = target.getModel().getElementAt(index);
+                        setTaskId(Integer.parseInt(item.toString().split(" | ")[0]));
+                        System.out.println(Integer.parseInt(item.toString().split(" | ")[0]));
+
+                        chooseButton.setEnabled(true);
+                        deleteButton.setEnabled(true);
+                    }
+                }
+            }
+        });*/
 
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    String item = list.getSelectedValue().toString();
+                    int id = Integer.parseInt(item.split(" | ")[0]);
 
-                int id = Integer.parseInt(list.getSelectedValue().toString().split(" | ")[0]);
-                System.out.println("Selected "+ id);
-                setTaskId(id);
-                setListTaskId(e.getLastIndex());
-                System.out.println("taskId = " + taskId + " a " + getTaskId());
+                    System.out.println(id);
+                    //taskId = id;
 
-                chooseButton.setEnabled(true);
-                deleteButton.setEnabled(true);
+                    chooseButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                }
             }
         });
+
 
         listPanel.add(label);
         listPanel.add(list);

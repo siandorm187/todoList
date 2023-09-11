@@ -8,17 +8,15 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskController {
     private Task task;
     private TaskView view;
-    private HashMap<Integer ,Task> tasks = new HashMap<>();
+    private HashMap<Integer,Task> tasks = new HashMap<>();
 
     private String fileName = "data.csv";
 
@@ -59,16 +57,16 @@ public class TaskController {
                 public void actionPerformed(ActionEvent e) {
                     Task task = tasks.get(listTaskId);
 
-                    System.out.println(task.getName() + " id: "+ listTaskId + " a " + view.getListTaskId());
+                    System.out.println(task.getName() + " id: "+ listTaskId);
 
-                    LocalDate date = LocalDate.now();
+                    /*LocalDate date = LocalDate.now();
                     LocalTime time = LocalTime.now();
 
                     String dateTime = date + " " + time.getHour()+":"+time.getMinute()+":"+time.getSecond();
 
                     System.out.println(dateTime + " zmena u " + listTaskId);
 
-                    editTask(fileName, listTaskId, "proste neco se asi zmenilo", task.getDescription(), 1, task.getDate());
+                    editTask(fileName, listTaskId, "proste neco se asi zmenilo", task.getDescription(), 1, task.getDate());*/
                 }
             });
 
