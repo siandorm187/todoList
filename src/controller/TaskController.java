@@ -43,30 +43,30 @@ public class TaskController {
                 task.setDate(taskInfo[4]);
 
                 this.tasks.put(task.getId(),task);
-                System.out.println(task.getId()-1);
             }
-
-            this.tasks.forEach((id, task) -> {
-                System.out.println(task.getId() + " a "+ id);
-            });
 
             int listTaskId = view.getTaskId();
 
             this.view.chooseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Task task = tasks.get(listTaskId);
 
-                    System.out.println(task.getName() + " id: "+ listTaskId);
 
-                    /*LocalDate date = LocalDate.now();
+                    int id =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
+
+                    Task task = tasks.get(id);
+
+                    System.out.println(/*task.getName() + */" id: "+ view.getListTaskId() + " a " + id);
+                    //System.out.println(view.getListTaskId());
+
+                    LocalDate date = LocalDate.now();
                     LocalTime time = LocalTime.now();
 
                     String dateTime = date + " " + time.getHour()+":"+time.getMinute()+":"+time.getSecond();
 
                     System.out.println(dateTime + " zmena u " + listTaskId);
 
-                    editTask(fileName, listTaskId, "proste neco se asi zmenilo", task.getDescription(), 1, task.getDate());*/
+                    editTask(fileName, id, "TEST BRATROMILE", task.getDescription(), 1, task.getDate());
                 }
             });
 

@@ -2,25 +2,16 @@ package view;
 import model.Task;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 public class TaskView {
     public int frameWidth = 1024;
     public int frameHeight = 768;
 
-    private int taskId = 0;
+    private int taskId = -1;
     private int listItem = -1;
 
 
@@ -73,11 +64,13 @@ public class TaskView {
             setTaskId(id);
             setListTaskId(e.getLastIndex());
 
+            System.out.println(id);
+            System.out.println(e.getFirstIndex());
             chooseButton.setEnabled(true);
             deleteButton.setEnabled(true);
         });*/
 
-        /*list.addMouseListener(new MouseAdapter() {
+        list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 1){
@@ -85,17 +78,27 @@ public class TaskView {
                     int index = target.locationToIndex(e.getPoint());
                     if (index >= 0) {
                         Object item = target.getModel().getElementAt(index);
-                        setTaskId(Integer.parseInt(item.toString().split(" | ")[0]));
-                        System.out.println(Integer.parseInt(item.toString().split(" | ")[0]));
+
+                        //int id = Integer.parseInt(item.toString().split(" | ")[0]);
+                        //String task = tasksList.get(index).split(" | ")[0];
+
+                        /*setTaskId(id);*/
+                        setListTaskId(index);
+
+                        //setTaskId(Integer.parseInt(task));
+
+                        System.out.println(getTaskId());
+
+                        //System.out.println(index);
 
                         chooseButton.setEnabled(true);
                         deleteButton.setEnabled(true);
                     }
                 }
             }
-        });*/
+        });
 
-        list.addListSelectionListener(new ListSelectionListener() {
+        /*list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
@@ -103,13 +106,14 @@ public class TaskView {
                     int id = Integer.parseInt(item.split(" | ")[0]);
 
                     System.out.println(id);
-                    //taskId = id;
+                    System.out.println(e.getLastIndex());
+                    setTaskId(e.getLastIndex());
 
                     chooseButton.setEnabled(true);
                     deleteButton.setEnabled(true);
                 }
             }
-        });
+        });*/
 
 
         listPanel.add(label);
@@ -142,6 +146,10 @@ public class TaskView {
 
     public void setListTaskId(int item){
         this.listItem = item;
+    }
+
+    public DefaultListModel<String> getTasks(){
+        return this.tasksList;
     }
     /*public void test(Function<Integer, Integer> function){
         if(taskId != 0){
