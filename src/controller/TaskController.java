@@ -8,10 +8,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class TaskController {
     private Task task;
@@ -45,18 +42,17 @@ public class TaskController {
                 this.tasks.put(task.getId(),task);
             }
 
-            int listTaskId = view.getTaskId();
+            //todo: fixnout hento
+            final int[] id = new int[1];
 
             this.view.chooseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    id[0] =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
 
+                    Task task = tasks.get(id[0]);
 
-                    int id =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
-
-                    Task task = tasks.get(id);
-
-                    System.out.println(/*task.getName() + */" id: "+ view.getListTaskId() + " a " + id);
+                    //System.out.println(/*task.getName() + */" id: "+ view.getListTaskId() + " a " + id[0]);
                     //System.out.println(view.getListTaskId());
 
                     LocalDate date = LocalDate.now();
@@ -64,23 +60,32 @@ public class TaskController {
 
                     String dateTime = date + " " + time.getHour()+":"+time.getMinute()+":"+time.getSecond();
 
-                    System.out.println(dateTime + " zmena u " + listTaskId);
+                    System.out.println("id je "+ id[0]);
 
-                    editTask(fileName, id, "TEST BRATROMILE", task.getDescription(), 1, task.getDate());
+                    editTask(fileName, id[0], task.getName(), "HFGHFGHFDGHFDGFDFGH", 2, dateTime);
                 }
             });
 
             this.view.deleteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    removeTask(fileName, listTaskId);
+                    id[0] =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
+                    System.out.println("id je "+ id[0]);
+                    removeTask(fileName, id[0]);
                 }
             });
 
             this.view.addButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    addTask(fileName, "", "", 0, "");
+                    addTask(fileName, "a", "a", 0, "a");
+                }
+            });
+
+            this.view.refreshButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    view.reloadFrame();
                 }
             });
         }
@@ -107,27 +112,12 @@ public class TaskController {
         final int[] maxIndex = {-1};
 
 
-        this.tasks.forEach((t1ID, t1) -> {
-            this.tasks.forEach((t2ID, t2) -> {
-                if(t1.getId() != t2.getId()){
-                    if(t1.getId() > t2.getId()){
-                        if(maxIndex[0] == -1){
-                            maxIndex[0] = t1.getId();
-                        }
-                        else{
-                            if(t1.getId() > maxIndex[0]){
-                                maxIndex[0] = t1.getId();
-                            }
-                        }
-                    }
-                }
-            });
-        });
+        int id = Collections.max(this.tasks.keySet())+1;
+        task.setId(id);
 
-        task.setId(maxIndex[0]);
+        System.out.println("MAXIMALNI INDEX MORE" + id);
 
-        this.tasks.put(task.getId(), task);
-
+        this.tasks.put(id, task);
         this.rewriteFile(fileName);
     }
 

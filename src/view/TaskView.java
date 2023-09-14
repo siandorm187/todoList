@@ -25,6 +25,8 @@ public class TaskView {
     public JButton addButton = new JButton();
     public JButton deleteButton = new JButton();
     public JButton chooseButton = new JButton();
+
+    public JButton refreshButton = new JButton();
     private JList list = new JList(tasksList);
     public void printTasksList(HashMap<Integer, Task> tasks) {
         tasks.forEach((id, item) -> {
@@ -38,22 +40,30 @@ public class TaskView {
         buttonPanel.setBounds(100, 500, 700, 200);
 
         addButton.setText("Přidat úkol");
-        deleteButton.setText("Odebrat úkol");
-        chooseButton.setText("Vybrat úkol");
         addButton.setBounds(200, 600, 150, 70);
-        deleteButton.setBounds(400, 600, 150, 70);
-        chooseButton.setBounds(600, 600, 150, 70);
         addButton.setBackground(new Color(39, 40, 41));
-        deleteButton.setBackground(new Color(39, 40, 41));
-        chooseButton.setBackground(new Color(39, 40, 41));
         addButton.setForeground(Color.white);
-        deleteButton.setForeground(Color.white);
-        chooseButton.setForeground(Color.white);
         addButton.setBorderPainted(false);
+
+        deleteButton.setText("Odebrat úkol");
+        deleteButton.setBounds(400, 600, 150, 70);
+        deleteButton.setBackground(new Color(39, 40, 41));
+        deleteButton.setForeground(Color.white);
         deleteButton.setBorderPainted(false);
+        deleteButton.setEnabled(false);
+
+        chooseButton.setText("Vybrat úkol");
+        chooseButton.setBounds(600, 600, 150, 70);
+        chooseButton.setBackground(new Color(39, 40, 41));
+        chooseButton.setForeground(Color.white);
         chooseButton.setBorderPainted(false);
         chooseButton.setEnabled(false);
-        deleteButton.setEnabled(false);
+
+        refreshButton.setText("R");
+        refreshButton.setBounds(50, 80, 50, 50);
+        refreshButton.setBackground(new Color(39, 40, 41));
+        refreshButton.setForeground(Color.white);
+        refreshButton.setBorderPainted(false);
 
         list.setFixedCellHeight(30);
         list.setBounds(50, 50, listPanel.getWidth(), listPanel.getHeight());
@@ -78,7 +88,6 @@ public class TaskView {
                     int index = target.locationToIndex(e.getPoint());
                     if (index >= 0) {
                         Object item = target.getModel().getElementAt(index);
-
                         //int id = Integer.parseInt(item.toString().split(" | ")[0]);
                         //String task = tasksList.get(index).split(" | ")[0];
 
@@ -118,6 +127,7 @@ public class TaskView {
 
         listPanel.add(label);
         listPanel.add(list);
+        buttonPanel.add(refreshButton);
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(chooseButton);
@@ -130,6 +140,8 @@ public class TaskView {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+
     }
 
     public int getTaskId(){
@@ -150,6 +162,14 @@ public class TaskView {
 
     public DefaultListModel<String> getTasks(){
         return this.tasksList;
+    }
+
+    public void reloadFrame(){
+        System.out.println("Reloaded");
+
+
+        frame.revalidate();
+        frame.repaint();
     }
     /*public void test(Function<Integer, Integer> function){
         if(taskId != 0){
