@@ -27,7 +27,7 @@ public class Main {
         controller.updateView();
     }
 
-    public int solution(int N){
+    /*public int solution(int N){
         String binary = Integer.toBinaryString(N);
         char[] chBin = binary.toCharArray();
 
@@ -134,5 +134,5 @@ public class Main {
         result = uniId;
 
         return result;
-    }
+    }*/
 }

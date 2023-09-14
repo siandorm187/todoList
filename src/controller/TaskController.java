@@ -52,9 +52,6 @@ public class TaskController {
 
                     Task task = tasks.get(id[0]);
 
-                    //System.out.println(/*task.getName() + */" id: "+ view.getListTaskId() + " a " + id[0]);
-                    //System.out.println(view.getListTaskId());
-
                     LocalDate date = LocalDate.now();
                     LocalTime time = LocalTime.now();
 
@@ -110,7 +107,6 @@ public class TaskController {
         task.setDate(taskDate);
 
         final int[] maxIndex = {-1};
-
 
         int id = Collections.max(this.tasks.keySet())+1;
         task.setId(id);

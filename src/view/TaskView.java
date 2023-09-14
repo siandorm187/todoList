@@ -29,8 +29,18 @@ public class TaskView {
     public JButton refreshButton = new JButton();
     private JList list = new JList(tasksList);
     public void printTasksList(HashMap<Integer, Task> tasks) {
+
         tasks.forEach((id, item) -> {
+
             tasksList.addElement(item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | " + item.getState() + " | " + item.getDate());
+            /*switch (item.getState()){
+                case 0:  color = Color.white;
+                break;
+                case 1: color = new Color(179, 239, 253);
+                break;
+                case 2: color = new Color(179, 253, 179);
+                default: color = Color.gray;
+            }*/
         });
 
         listPanel.setLayout(null);
@@ -67,6 +77,12 @@ public class TaskView {
 
         list.setFixedCellHeight(30);
         list.setBounds(50, 50, listPanel.getWidth(), listPanel.getHeight());
+
+        for(int i = 0; i< list.getModel().getSize(); i++){
+            int id = Integer.parseInt(list.getModel().getElementAt(i).toString().split("|")[0]);
+            //list.getModel()
+            //System.out.println(list.getModel().getElementAt(i).toString().split(" | ")[3] + "z "+ list.getModel().getElementAt(i).toString());
+        }
 
         /*list.addListSelectionListener(e -> {
             int id = Integer.parseInt(list.getSelectedValue().toString().split(" | ")[0]);
