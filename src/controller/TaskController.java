@@ -2,6 +2,8 @@ package controller;
 import model.Task;
 import view.TaskView;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -59,7 +61,11 @@ public class TaskController {
 
                     System.out.println("id je "+ id[0]);
 
-                    editTask(fileName, id[0], task.getName(), "HFGHFGHFDGHFDGFDFGH", 2, dateTime);
+                    editTask(fileName, id[0], task.getName(), "HFGHFGHFDGHFDGFDFGH", 1, dateTime);
+
+                    view.editTaskPanel.setVisible(true);
+
+                    reload();
                 }
             });
 
@@ -69,20 +75,29 @@ public class TaskController {
                     id[0] =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
                     System.out.println("id je "+ id[0]);
                     removeTask(fileName, id[0]);
+
+                    reload();
                 }
             });
 
             this.view.addButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    view.taskNameIn.setVisible(true);
+                    view.taskDescIn.setVisible(true);
                     addTask(fileName, "a", "a", 0, "a");
+                    view.addTaskPanel.setVisible(true);
+
+                    reload();
                 }
             });
 
             this.view.refreshButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    view.reloadFrame();
+                    //view.reloadFrame();
+
+                    reload();
                 }
             });
         }
@@ -90,6 +105,19 @@ public class TaskController {
             System.out.println("Unable to find the file.");
             e.printStackTrace();
         }
+    }
+
+    public void reload(){
+        DefaultListModel list = new DefaultListModel<Task>();
+        tasks.forEach((k, v) -> {
+            System.out.println(v.getName());
+            list.addElement(v);
+        });
+        view.updateList(tasks);
+        //todo: ulozit hodnoty do listu
+        view.refreshButton.setText("Refreshnuto");
+        view.refreshButton.setBackground(Color.red);
+        view.reloadFrame();
     }
 
     public void addTask(String fileName, Task task){
@@ -175,11 +203,6 @@ public class TaskController {
 
     }
 
-    /*public void resetView(){
-        for(Task item : tasks){
-            view..addElement(item.getId() + " | "+item.getName()+" | "+item.getDescription()+" | "+item.getState()+" | "+item.getDate());
-        }
-    }*/
     public void updateView(){
 
         //view.printTasksList();

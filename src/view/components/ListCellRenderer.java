@@ -27,10 +27,10 @@ public class ListCellRenderer extends JLabel implements javax.swing.ListCellRend
             case 1: setBackground(new Color(179, 239, 253));
                 break;
             case 2: setBackground(new Color(179, 253, 179));
+                break;
             default: setBackground(Color.gray);
         }
 
-        setBackground(Color.white);
         if (isSelected) {
             setForeground(Color.black);
         } else {

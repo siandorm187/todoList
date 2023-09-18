@@ -35,21 +35,7 @@ public class TaskView {
     private JList list = new JList(tasksList);
     public void printTasksList(HashMap<Integer, Task> tasks) {
 
-        tasks.forEach((id, item) -> {
-            String s = "\uD83D\uDFE2";
-            String test = new String(s.getBytes(StandardCharsets.UTF_16), StandardCharsets.UTF_16);
-
-            char stateCh = ' ';
-            switch(item.getState()){
-                case 0: stateCh = '⚪';
-                break;
-                case 1: stateCh = '⚫';
-                break;
-                default: stateCh = '⚠';
-            }
-
-            tasksList.addElement(item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | " +stateCh);
-        });
+        list.setModel(parseListData(tasks));
 
         int width = this.frameWidth - (this.frameWidth / 3);
 
@@ -61,9 +47,11 @@ public class TaskView {
 
         addTaskPanel.setLayout(null);
         addTaskPanel.setBounds(100, 450, width, 100);
+        addTaskPanel.setBackground(Color.green);
+        editTaskPanel.setBackground(Color.blue);
 
         editTaskPanel.setLayout(null);
-        editTaskPanel.setBounds(100, 450, width-10, 110);
+        editTaskPanel.setBounds(100, 450, width, 100);
 
         addButton.setText("Přidat úkol");
         addButton.setBounds(200, 600, 150, 70);
@@ -72,6 +60,7 @@ public class TaskView {
         addButton.setBorderPainted(false);
 
         taskNameIn.setForeground(Color.gray);
+        taskNameIn.setBounds(100, 500, 100, 50);
         taskNameIn.setText("Název: ");
 
         taskDescIn.setForeground(Color.gray);
@@ -111,17 +100,6 @@ public class TaskView {
         //todo: custom renderer pro barvy jednotlivych radku
         list.setCellRenderer(new ListCellRenderer());
 
-        /*list.addListSelectionListener(e -> {
-            int id = Integer.parseInt(list.getSelectedValue().toString().split(" | ")[0]);
-
-            setTaskId(id);
-            setListTaskId(e.getLastIndex());
-
-            System.out.println(id);
-            System.out.println(e.getFirstIndex());
-            chooseButton.setEnabled(true);
-            deleteButton.setEnabled(true);
-        });*/
 
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -150,23 +128,6 @@ public class TaskView {
             }
         });
 
-        /*list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    String item = list.getSelectedValue().toString();
-                    int id = Integer.parseInt(item.split(" | ")[0]);
-
-                    System.out.println(id);
-                    System.out.println(e.getLastIndex());
-                    setTaskId(e.getLastIndex());
-
-                    chooseButton.setEnabled(true);
-                    deleteButton.setEnabled(true);
-                }
-            }
-        });*/
-
         listPanel.add(label);
         listPanel.add(list);
         buttonPanel.add(refreshButton);
@@ -176,11 +137,13 @@ public class TaskView {
 
         addTaskPanel.add(taskNameIn);
         addTaskPanel.add(taskDescIn);
-        addTaskPanel.setBackground(Color.green);
-        editTaskPanel.setBackground(Color.red);
+        addTaskPanel.setVisible(false);
+
+
+        editTaskPanel.setVisible(false);
 
         frame.add(listPanel);
-        //frame.add(editTaskPanel);
+        frame.add(editTaskPanel);
         frame.add(addTaskPanel);
         frame.add(buttonPanel);
 
@@ -211,24 +174,43 @@ public class TaskView {
         return this.tasksList;
     }
 
-    public void reloadFrame(){
+    public void reloadFrame(){//ListModel tasks){
         System.out.println("Reloaded");
-
+        //list = new JList(tasks);
         frame.revalidate();
         frame.repaint();
     }
-    /*public void test(Function<Integer, Integer> function){
-        if(taskId != 0){
-            function.apply(taskId);
-        }
-    }*/
 
-    /*public void changeBtnAction(Runnable function){
-        this.chooseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                function.run();
+    public void updateList(HashMap tasks){
+        //list = new JList(tasks);
+        list.setModel(parseListData(tasks));
+        list.revalidate();
+        list.repaint();
+    }
+
+    public DefaultListModel parseListData(HashMap<Integer, Task> tasks){
+        DefaultListModel<String> taskL = new DefaultListModel<>();
+
+        tasks.forEach((id, item) -> {
+            char stateCh = ' ';
+            switch(item.getState()){
+                case 0: stateCh = '⚪';
+                    break;
+                case 1: stateCh = '⚫';
+                    break;
+                default: stateCh = '⚠';
             }
+
+            boolean validStates = item.getState() == 0 || item.getState() == 1;
+            String el = item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | " +stateCh;
+
+            if(validStates) {
+                taskL.addElement(el);
+                tasksList.addElement(el);
+            }
+            else System.out.println("Task ID "+ item.getId() + " has invalid state");
         });
-    }*/
+
+        return taskL;
+    }
 }
