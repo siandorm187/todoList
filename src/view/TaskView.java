@@ -1,10 +1,12 @@
 package view;
 import model.Task;
+import view.components.ListCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class TaskView {
@@ -25,35 +27,55 @@ public class TaskView {
     public JButton addButton = new JButton();
     public JButton deleteButton = new JButton();
     public JButton chooseButton = new JButton();
-
     public JButton refreshButton = new JButton();
+    public JPanel addTaskPanel = new JPanel();
+    public JPanel editTaskPanel = new JPanel();
+    public JTextField taskNameIn = new JTextField();
+    public JTextField taskDescIn = new JTextField();
     private JList list = new JList(tasksList);
     public void printTasksList(HashMap<Integer, Task> tasks) {
 
         tasks.forEach((id, item) -> {
+            String s = "\uD83D\uDFE2";
+            String test = new String(s.getBytes(StandardCharsets.UTF_16), StandardCharsets.UTF_16);
 
-            tasksList.addElement(item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | " + item.getState() + " | " + item.getDate());
-            /*switch (item.getState()){
-                case 0:  color = Color.white;
+            char stateCh = ' ';
+            switch(item.getState()){
+                case 0: stateCh = '⚪';
                 break;
-                case 1: color = new Color(179, 239, 253);
+                case 1: stateCh = '⚫';
                 break;
-                case 2: color = new Color(179, 253, 179);
-                default: color = Color.gray;
-            }*/
+                default: stateCh = '⚠';
+            }
+
+            tasksList.addElement(item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | " +stateCh);
         });
 
-        listPanel.setLayout(null);
-        buttonPanel.setLayout(null);
+        int width = this.frameWidth - (this.frameWidth / 3);
 
-        listPanel.setBounds(100, 30, this.frameWidth - (this.frameWidth / 3), 500);
-        buttonPanel.setBounds(100, 500, 700, 200);
+        listPanel.setLayout(null);
+        listPanel.setBounds(100, 30, width, 400);
+
+        buttonPanel.setLayout(null);
+        buttonPanel.setBounds(100, 800, width, 200);
+
+        addTaskPanel.setLayout(null);
+        addTaskPanel.setBounds(100, 450, width, 100);
+
+        editTaskPanel.setLayout(null);
+        editTaskPanel.setBounds(100, 450, width-10, 110);
 
         addButton.setText("Přidat úkol");
         addButton.setBounds(200, 600, 150, 70);
         addButton.setBackground(new Color(39, 40, 41));
         addButton.setForeground(Color.white);
         addButton.setBorderPainted(false);
+
+        taskNameIn.setForeground(Color.gray);
+        taskNameIn.setText("Název: ");
+
+        taskDescIn.setForeground(Color.gray);
+        taskDescIn.setText("Podrobnosti: ");
 
         deleteButton.setText("Odebrat úkol");
         deleteButton.setBounds(400, 600, 150, 70);
@@ -80,9 +102,14 @@ public class TaskView {
 
         for(int i = 0; i< list.getModel().getSize(); i++){
             int id = Integer.parseInt(list.getModel().getElementAt(i).toString().split("|")[0]);
+
+            Task t = tasks.get(id);
             //list.getModel()
             //System.out.println(list.getModel().getElementAt(i).toString().split(" | ")[3] + "z "+ list.getModel().getElementAt(i).toString());
         }
+
+        //todo: custom renderer pro barvy jednotlivych radku
+        list.setCellRenderer(new ListCellRenderer());
 
         /*list.addListSelectionListener(e -> {
             int id = Integer.parseInt(list.getSelectedValue().toString().split(" | ")[0]);
@@ -140,7 +167,6 @@ public class TaskView {
             }
         });*/
 
-
         listPanel.add(label);
         listPanel.add(list);
         buttonPanel.add(refreshButton);
@@ -148,7 +174,14 @@ public class TaskView {
         buttonPanel.add(deleteButton);
         buttonPanel.add(chooseButton);
 
+        addTaskPanel.add(taskNameIn);
+        addTaskPanel.add(taskDescIn);
+        addTaskPanel.setBackground(Color.green);
+        editTaskPanel.setBackground(Color.red);
+
         frame.add(listPanel);
+        //frame.add(editTaskPanel);
+        frame.add(addTaskPanel);
         frame.add(buttonPanel);
 
         frame.setBackground(new Color(217,217,217));
@@ -156,8 +189,6 @@ public class TaskView {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-
     }
 
     public int getTaskId(){
@@ -182,7 +213,6 @@ public class TaskView {
 
     public void reloadFrame(){
         System.out.println("Reloaded");
-
 
         frame.revalidate();
         frame.repaint();
