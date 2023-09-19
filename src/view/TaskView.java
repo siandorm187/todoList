@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class TaskView {
@@ -27,31 +26,40 @@ public class TaskView {
     public JButton addButton = new JButton();
     public JButton deleteButton = new JButton();
     public JButton chooseButton = new JButton();
+    public JButton delYesButton = new JButton();
+    public JButton delNoButton = new JButton();
     public JButton refreshButton = new JButton();
     public JPanel addTaskPanel = new JPanel();
-    public JPanel editTaskPanel = new JPanel();
-    public JTextField taskNameIn = new JTextField();
-    public JTextField taskDescIn = new JTextField();
+    public JPanel deleteTaskPanel = new JPanel();
+    public JTextArea taskNameIn = new JTextArea();
+    public JTextArea taskDescIn = new JTextArea();
+    public JButton finalAddButton = new JButton();
+    public JLabel lblInfo = new JLabel("");
+    public JLabel lblAddIn1 = new JLabel("");
+    public JLabel lblAddIn2 = new JLabel("");
+    public JLabel lblDelete = new JLabel("Opravdu chcete vymazat tento úkol?");
     private JList list = new JList(tasksList);
     public void printTasksList(HashMap<Integer, Task> tasks) {
 
         list.setModel(parseListData(tasks));
 
-        int width = this.frameWidth - (this.frameWidth / 3);
+        int width = this.frameWidth - (this.frameWidth / 4);
 
         listPanel.setLayout(null);
         listPanel.setBounds(100, 30, width, 400);
+
+        lblInfo.setBounds(150, 420, width, 50);
 
         buttonPanel.setLayout(null);
         buttonPanel.setBounds(100, 800, width, 200);
 
         addTaskPanel.setLayout(null);
         addTaskPanel.setBounds(100, 450, width, 100);
-        addTaskPanel.setBackground(Color.green);
-        editTaskPanel.setBackground(Color.blue);
+        addTaskPanel.setBackground(Color.white);
 
-        editTaskPanel.setLayout(null);
-        editTaskPanel.setBounds(100, 450, width, 100);
+        deleteTaskPanel.setBackground(Color.white);
+        deleteTaskPanel.setLayout(null);
+        deleteTaskPanel.setBounds(100, 450, width, 100);
 
         addButton.setText("Přidat úkol");
         addButton.setBounds(200, 600, 150, 70);
@@ -59,12 +67,31 @@ public class TaskView {
         addButton.setForeground(Color.white);
         addButton.setBorderPainted(false);
 
+        lblAddIn1.setText("Název: ");
+        lblAddIn1.setBounds(50, 25, 100, 30);
+
+        lblAddIn2.setText("Podrobnosti: ");
+        lblAddIn2.setBounds(250, 25, 100, 30);
+
         taskNameIn.setForeground(Color.gray);
-        taskNameIn.setBounds(100, 500, 100, 50);
-        taskNameIn.setText("Název: ");
+        taskNameIn.setBounds(100, 30, 100, 30);
+        taskNameIn.setToolTipText("Název: ");
+        taskNameIn.setRows(1);
+        taskNameIn.setBackground(new Color(217,217,217));
 
         taskDescIn.setForeground(Color.gray);
-        taskDescIn.setText("Podrobnosti: ");
+        taskDescIn.setBounds(340, 30, 200, 50);
+        taskDescIn.setRows(3);
+        taskDescIn.setBackground(new Color(217,217,217));
+        taskDescIn.setLineWrap(true);
+        taskDescIn.setToolTipText("Podrobnosti: ");
+
+        finalAddButton.setText("Přidat úkol");
+        finalAddButton.setBounds(600, 25, 100, 50);
+        finalAddButton.setBackground(new Color(107, 187, 107));
+        finalAddButton.setForeground(Color.white);
+        finalAddButton.setBorderPainted(false);
+        finalAddButton.setEnabled(true);
 
         deleteButton.setText("Odebrat úkol");
         deleteButton.setBounds(400, 600, 150, 70);
@@ -85,48 +112,60 @@ public class TaskView {
         refreshButton.setBackground(new Color(39, 40, 41));
         refreshButton.setForeground(Color.white);
         refreshButton.setBorderPainted(false);
+        refreshButton.setVisible(false);
+
+
+
+        delYesButton.setText("Ano");
+        delYesButton.setBounds(400, 25, 100, 50);
+        delYesButton.setBackground(Color.red);
+        delYesButton.setForeground(Color.white);
+        delYesButton.setBorderPainted(false);
+        delYesButton.setEnabled(true);
+
+        delNoButton.setText("Ne");
+        delNoButton.setBounds(600, 25, 100, 50);
+        delNoButton.setBackground(Color.green);
+        delNoButton.setForeground(Color.white);
+        delNoButton.setBorderPainted(false);
+        delNoButton.setEnabled(true);
+
+        lblDelete.setBounds(50, 25, 300,50);
 
         list.setFixedCellHeight(30);
         list.setBounds(50, 50, listPanel.getWidth(), listPanel.getHeight());
 
-        for(int i = 0; i< list.getModel().getSize(); i++){
-            int id = Integer.parseInt(list.getModel().getElementAt(i).toString().split("|")[0]);
-
-            Task t = tasks.get(id);
-            //list.getModel()
-            //System.out.println(list.getModel().getElementAt(i).toString().split(" | ")[3] + "z "+ list.getModel().getElementAt(i).toString());
-        }
-
         //todo: custom renderer pro barvy jednotlivych radku
         list.setCellRenderer(new ListCellRenderer());
-
 
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 1){
-                    JList target = (JList) e.getSource();
-                    int index = target.locationToIndex(e.getPoint());
-                    if (index >= 0) {
-                        Object item = target.getModel().getElementAt(index);
-                        //int id = Integer.parseInt(item.toString().split(" | ")[0]);
-                        //String task = tasksList.get(index).split(" | ")[0];
+            if(e.getClickCount() == 1){
+                JList target = (JList) e.getSource();
+                int index = target.locationToIndex(e.getPoint());
+                if (index >= 0) {
+                    Object item = target.getModel().getElementAt(index);
+                    //int id = Integer.parseInt(item.toString().split(" | ")[0]);
+                    //String task = tasksList.get(index).split(" | ")[0];
 
-                        /*setTaskId(id);*/
-                        setListTaskId(index);
+                    /*setTaskId(id);*/
+                    setListTaskId(index);
 
-                        //setTaskId(Integer.parseInt(task));
+                    //setTaskId(Integer.parseInt(task));
 
-                        System.out.println(getTaskId());
+                    System.out.println(getTaskId());
+                    System.out.println(getListTaskId());
 
-                        //System.out.println(index);
+                    //System.out.println(index);
 
-                        chooseButton.setEnabled(true);
-                        deleteButton.setEnabled(true);
-                    }
+                    chooseButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
                 }
             }
+            }
         });
+
 
         listPanel.add(label);
         listPanel.add(list);
@@ -137,21 +176,27 @@ public class TaskView {
 
         addTaskPanel.add(taskNameIn);
         addTaskPanel.add(taskDescIn);
+        addTaskPanel.add(finalAddButton);
+        addTaskPanel.add(lblAddIn1);
+        addTaskPanel.add(lblAddIn2);
         addTaskPanel.setVisible(false);
 
-
-        editTaskPanel.setVisible(false);
-
-        frame.add(listPanel);
-        frame.add(editTaskPanel);
-        frame.add(addTaskPanel);
-        frame.add(buttonPanel);
+        deleteTaskPanel.add(lblDelete);
+        deleteTaskPanel.add(delNoButton);
+        deleteTaskPanel.add(delYesButton);
+        deleteTaskPanel.setVisible(false);
 
         frame.setBackground(new Color(217,217,217));
         frame.setSize(this.frameWidth, this.frameHeight);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        frame.add(lblInfo);
+        frame.add(listPanel);
+        frame.add(deleteTaskPanel);
+        frame.add(addTaskPanel);
+        frame.add(buttonPanel);
     }
 
     public int getTaskId(){

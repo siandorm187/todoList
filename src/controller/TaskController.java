@@ -44,9 +44,7 @@ public class TaskController {
                 this.tasks.put(task.getId(),task);
             }
 
-            //todo: fixnout hento
             final int[] id = new int[1];
-
             this.view.chooseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -54,29 +52,58 @@ public class TaskController {
 
                     Task task = tasks.get(id[0]);
 
-                    LocalDate date = LocalDate.now();
-                    LocalTime time = LocalTime.now();
+                    if(task.getState() != 1){
 
-                    String dateTime = date + " " + time.getHour()+":"+time.getMinute()+":"+time.getSecond();
+                        System.out.println("id je "+ id[0]);
 
-                    System.out.println("id je "+ id[0]);
+                        editTask(fileName, id[0], task.getName(), "Lorem ipsum", 1, getDateTime());
 
-                    editTask(fileName, id[0], task.getName(), "HFGHFGHFDGHFDGFDFGH", 1, dateTime);
+                        view.lblInfo.setForeground(new Color(107, 142, 187));
+                        view.lblInfo.setText("Vybral jste task č." + id[0] + ".");
+                        //view.editTaskPanel.setVisible(true);
 
-                    view.editTaskPanel.setVisible(true);
 
-                    reload();
+                        reload();
+                    }
+                    else{
+                        System.out.println("Tento task už máte vybraný!");
+                        view.lblInfo.setForeground(new Color(187, 107, 107));
+                        view.lblInfo.setText("Tento úkol je už vybraný!");
+                    }
+                    view.addTaskPanel.setVisible(false);
+                    view.deleteTaskPanel.setVisible(false);
                 }
             });
 
             this.view.deleteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    view.deleteTaskPanel.setVisible(true);
+                    view.addTaskPanel.setVisible(false);
+                }
+            });
+
+            this.view.delYesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                     id[0] =  Integer.parseInt(view.getTasks().get(view.getListTaskId()).split(" | ")[0]);
                     System.out.println("id je "+ id[0]);
                     removeTask(fileName, id[0]);
+                    view.deleteTaskPanel.setVisible(false);
+
+                    view.lblInfo.setForeground(new Color(187, 107, 107));
+                    view.lblInfo.setText("Vymazal jste task č." + id[0] + ".");
 
                     reload();
+                }
+            });
+
+            this.view.delNoButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    view.deleteTaskPanel.setVisible(false);
+                    view.lblInfo.setForeground(new Color(107, 187, 107));
+                    view.lblInfo.setText("Vymazání bylo zrušeno.");
                 }
             });
 
@@ -85,9 +112,22 @@ public class TaskController {
                 public void actionPerformed(ActionEvent e) {
                     view.taskNameIn.setVisible(true);
                     view.taskDescIn.setVisible(true);
-                    addTask(fileName, "a", "a", 0, "a");
+                    //addTask(fileName, "a", "a", 0, "a");
                     view.addTaskPanel.setVisible(true);
+                    view.deleteTaskPanel.setVisible(false);
 
+                    //reload();
+                }
+            });
+
+            this.view.finalAddButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addTask(fileName, view.taskNameIn.getText(), view.taskDescIn.getText(), 0, getDateTime());
+                    view.addTaskPanel.setVisible(false);
+
+                    view.lblInfo.setText("Přidal jste nový úkol.");
+                    view.lblInfo.setForeground(new Color(107, 187, 107));
                     reload();
                 }
             });
@@ -118,6 +158,13 @@ public class TaskController {
         view.refreshButton.setText("Refreshnuto");
         view.refreshButton.setBackground(Color.red);
         view.reloadFrame();
+    }
+
+    public String getDateTime(){
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        return date + " " + time.getHour()+":"+time.getMinute()+":"+time.getSecond();
     }
 
     public void addTask(String fileName, Task task){
