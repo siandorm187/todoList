@@ -39,6 +39,8 @@ public class TaskView {
     public JLabel lblAddIn2 = new JLabel("");
     public JLabel lblDelete = new JLabel("Opravdu chcete vymazat tento úkol?");
     private JList list = new JList(tasksList);
+
+    private DetailView detail = new DetailView();
     public void printTasksList(HashMap<Integer, Task> tasks) {
 
         list.setModel(parseListData(tasks));
@@ -141,31 +143,26 @@ public class TaskView {
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            if(e.getClickCount() == 1){
                 JList target = (JList) e.getSource();
                 int index = target.locationToIndex(e.getPoint());
-                if (index >= 0) {
-                    Object item = target.getModel().getElementAt(index);
-                    //int id = Integer.parseInt(item.toString().split(" | ")[0]);
-                    //String task = tasksList.get(index).split(" | ")[0];
+                if(index >= 0){
+                    if(e.getClickCount() == 1){
+                        setListTaskId(index);
 
-                    /*setTaskId(id);*/
-                    setListTaskId(index);
+                        System.out.println(getTaskId());
+                        System.out.println(getListTaskId());
 
-                    //setTaskId(Integer.parseInt(task));
+                        chooseButton.setEnabled(true);
+                        deleteButton.setEnabled(true);
+                    }
 
-                    System.out.println(getTaskId());
-                    System.out.println(getListTaskId());
+                    if(e.getClickCount() == 2){
+                        detail.printTask(tasksList.get(index));
 
-                    //System.out.println(index);
-
-                    chooseButton.setEnabled(true);
-                    deleteButton.setEnabled(true);
+                    }
                 }
             }
-            }
         });
-
 
         listPanel.add(label);
         listPanel.add(list);
@@ -237,20 +234,27 @@ public class TaskView {
         DefaultListModel<String> taskL = new DefaultListModel<>();
 
         tasks.forEach((id, item) -> {
-            char stateCh = ' ';
+            String stateColor = " ";
             switch(item.getState()){
-                case 0: stateCh = '⚪';
+                case 0: stateColor =  "green";
                     break;
-                case 1: stateCh = '⚫';
+                case 1: stateColor = "blue";
                     break;
-                default: stateCh = '⚠';
+                default: stateColor = "red";
             }
 
             boolean validStates = item.getState() == 0 || item.getState() == 1;
-            String el = item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | " +stateCh;
+
+            String htmlStart = "<html><font>";
+            String htmlEnd = "</font><font color='"+stateColor+"'>⚫</font></html>";
+            String el =  item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | ";
+            //System.out.println("\u001B[31m"+ "joojoojojojoj" + "\u001B[0m");
+            //todo: fixnout string - ted facha barvicka ale nefacha nic jinyho
+            //String el = "<html><font>"+item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | </font><font color='"+stateColor+"'>⚫</font></html>";
+            String elText = htmlStart + el + htmlEnd;
 
             if(validStates) {
-                taskL.addElement(el);
+                taskL.addElement(elText);
                 tasksList.addElement(el);
             }
             else System.out.println("Task ID "+ item.getId() + " has invalid state");

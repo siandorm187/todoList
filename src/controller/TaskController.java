@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -33,7 +32,7 @@ public class TaskController {
                 Task task = new Task();
 
                 String data = sc.nextLine();
-                String[] taskInfo = data.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                String[] taskInfo = data.split(";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
                 task.setId(Integer.parseInt(taskInfo[0]));
                 task.setName(taskInfo[1]);
@@ -61,7 +60,6 @@ public class TaskController {
                         view.lblInfo.setForeground(new Color(107, 142, 187));
                         view.lblInfo.setText("Vybral jste task č." + id[0] + ".");
                         //view.editTaskPanel.setVisible(true);
-
 
                         reload();
                     }
@@ -186,8 +184,6 @@ public class TaskController {
         int id = Collections.max(this.tasks.keySet())+1;
         task.setId(id);
 
-        System.out.println("MAXIMALNI INDEX MORE" + id);
-
         this.tasks.put(id, task);
         this.rewriteFile(fileName);
     }
@@ -227,7 +223,7 @@ public class TaskController {
                 this.tasks.forEach((tId, t) -> {
                     String id = String.valueOf(t.getId());
                     try {
-                        writer.write(id+','+t.getName()+','+t.getDescription()+','+t.getState()+','+t.getDate()+'\n');
+                        writer.write(id+';'+t.getName()+';'+t.getDescription()+';'+t.getState()+';'+t.getDate()+'\n');
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
