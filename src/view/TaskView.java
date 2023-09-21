@@ -1,8 +1,11 @@
 package view;
+import lib.Colors;
 import model.Task;
 import view.components.ListCellRenderer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -41,6 +44,11 @@ public class TaskView {
     private JList list = new JList(tasksList);
 
     private DetailView detail = new DetailView();
+
+    private ListCellRenderer renderer = new ListCellRenderer();
+
+    private Colors colors = new Colors();
+
     public void printTasksList(HashMap<Integer, Task> tasks) {
 
         list.setModel(parseListData(tasks));
@@ -49,96 +57,103 @@ public class TaskView {
 
         listPanel.setLayout(null);
         listPanel.setBounds(100, 30, width, 400);
+        listPanel.setBackground(colors.colorSecondary);
 
         lblInfo.setBounds(150, 420, width, 50);
+        lblInfo.setForeground(colors.colorText1);
 
         buttonPanel.setLayout(null);
         buttonPanel.setBounds(100, 800, width, 200);
+        buttonPanel.setBackground(colors.colorSecondary);
 
         addTaskPanel.setLayout(null);
         addTaskPanel.setBounds(100, 450, width, 100);
-        addTaskPanel.setBackground(Color.white);
+        addTaskPanel.setBackground(colors.colorSecondary);
 
-        deleteTaskPanel.setBackground(Color.white);
+        deleteTaskPanel.setBackground(colors.colorSecondary);
         deleteTaskPanel.setLayout(null);
         deleteTaskPanel.setBounds(100, 450, width, 100);
 
         addButton.setText("Přidat úkol");
         addButton.setBounds(200, 600, 150, 70);
-        addButton.setBackground(new Color(39, 40, 41));
-        addButton.setForeground(Color.white);
+        addButton.setBackground(colors.colorComponent);
+        addButton.setForeground(colors.colorText1);
         addButton.setBorderPainted(false);
 
         lblAddIn1.setText("Název: ");
         lblAddIn1.setBounds(50, 25, 100, 30);
+        lblAddIn1.setForeground(colors.colorText1);
 
         lblAddIn2.setText("Podrobnosti: ");
         lblAddIn2.setBounds(250, 25, 100, 30);
+        lblAddIn2.setForeground(colors.colorText1);
 
-        taskNameIn.setForeground(Color.gray);
+        taskNameIn.setForeground(colors.colorText2);
         taskNameIn.setBounds(100, 30, 100, 30);
         taskNameIn.setToolTipText("Název: ");
         taskNameIn.setRows(1);
-        taskNameIn.setBackground(new Color(217,217,217));
+        taskNameIn.setBackground(colors.colorText1);
 
-        taskDescIn.setForeground(Color.gray);
+        taskDescIn.setForeground(colors.colorText2);
         taskDescIn.setBounds(340, 30, 200, 50);
         taskDescIn.setRows(3);
-        taskDescIn.setBackground(new Color(217,217,217));
+        taskDescIn.setBackground(colors.colorText1);
         taskDescIn.setLineWrap(true);
         taskDescIn.setToolTipText("Podrobnosti: ");
 
         finalAddButton.setText("Přidat úkol");
         finalAddButton.setBounds(600, 25, 100, 50);
-        finalAddButton.setBackground(new Color(107, 187, 107));
-        finalAddButton.setForeground(Color.white);
+        finalAddButton.setBackground(colors.colorSuccess);
+        finalAddButton.setForeground(colors.colorText1);
         finalAddButton.setBorderPainted(false);
         finalAddButton.setEnabled(true);
 
         deleteButton.setText("Odebrat úkol");
         deleteButton.setBounds(400, 600, 150, 70);
-        deleteButton.setBackground(new Color(39, 40, 41));
-        deleteButton.setForeground(Color.white);
+        deleteButton.setBackground(colors.colorComponent);
+        deleteButton.setForeground(colors.colorText1);
         deleteButton.setBorderPainted(false);
         deleteButton.setEnabled(false);
 
         chooseButton.setText("Vybrat úkol");
         chooseButton.setBounds(600, 600, 150, 70);
-        chooseButton.setBackground(new Color(39, 40, 41));
-        chooseButton.setForeground(Color.white);
+        chooseButton.setBackground(colors.colorComponent);
+        chooseButton.setForeground(colors.colorText1);
         chooseButton.setBorderPainted(false);
         chooseButton.setEnabled(false);
 
         refreshButton.setText("R");
         refreshButton.setBounds(50, 80, 50, 50);
-        refreshButton.setBackground(new Color(39, 40, 41));
-        refreshButton.setForeground(Color.white);
+        refreshButton.setBackground(colors.colorComponent);
+        refreshButton.setForeground(colors.colorText1);
         refreshButton.setBorderPainted(false);
         refreshButton.setVisible(false);
 
-
-
         delYesButton.setText("Ano");
         delYesButton.setBounds(400, 25, 100, 50);
-        delYesButton.setBackground(Color.red);
-        delYesButton.setForeground(Color.white);
+        delYesButton.setBackground(colors.colorDanger);
+        delYesButton.setForeground(colors.colorText1);
         delYesButton.setBorderPainted(false);
         delYesButton.setEnabled(true);
 
         delNoButton.setText("Ne");
         delNoButton.setBounds(600, 25, 100, 50);
-        delNoButton.setBackground(Color.green);
-        delNoButton.setForeground(Color.white);
+        delNoButton.setBackground(colors.colorSuccess);
+        delNoButton.setForeground(colors.colorText1);
         delNoButton.setBorderPainted(false);
         delNoButton.setEnabled(true);
 
         lblDelete.setBounds(50, 25, 300,50);
+        lblDelete.setForeground(colors.colorText1);
 
         list.setFixedCellHeight(30);
+        list.setSelectionBackground(Color.white);
         list.setBounds(50, 50, listPanel.getWidth(), listPanel.getHeight());
+        list.setBackground(colors.colorMain);
+        list.setForeground(colors.colorText1);
+        list.setCellRenderer(renderer);
 
         //todo: custom renderer pro barvy jednotlivych radku
-        list.setCellRenderer(new ListCellRenderer());
 
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -183,7 +198,7 @@ public class TaskView {
         deleteTaskPanel.add(delYesButton);
         deleteTaskPanel.setVisible(false);
 
-        frame.setBackground(new Color(217,217,217));
+        frame.setBackground(colors.colorMain);
         frame.setSize(this.frameWidth, this.frameHeight);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -248,9 +263,7 @@ public class TaskView {
             String htmlStart = "<html><font>";
             String htmlEnd = "</font><font color='"+stateColor+"'>⚫</font></html>";
             String el =  item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | ";
-            //System.out.println("\u001B[31m"+ "joojoojojojoj" + "\u001B[0m");
             //todo: fixnout string - ted facha barvicka ale nefacha nic jinyho
-            //String el = "<html><font>"+item.getId() + " | " + item.getName() + " | " + item.getDescription() + " | do " + item.getDate() + " | </font><font color='"+stateColor+"'>⚫</font></html>";
             String elText = htmlStart + el + htmlEnd;
 
             if(validStates) {

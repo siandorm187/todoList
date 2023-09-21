@@ -1,14 +1,23 @@
 package view.components;
 
+import lib.Colors;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class ListCellRenderer extends JLabel implements javax.swing.ListCellRenderer {
+public class ListCellRenderer extends DefaultListCellRenderer {
     private int rowIndex;
+    private Colors colors = new Colors();
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        rowIndex = index;
+        //todo: dostat state ball pomoci tohoto, ne staticky do stringu pres html jak predtim
+        Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        if (isSelected) {
+            c.setForeground(colors.colorComponent);
+            c.setBackground(colors.colorMain);
+        }
 
         String val = value.toString();
 
@@ -31,12 +40,6 @@ public class ListCellRenderer extends JLabel implements javax.swing.ListCellRend
             default: setBackground(Color.gray);
         }
 
-        if (isSelected) {
-            setForeground(Color.black);
-        } else {
-            setForeground(Color.gray);
-        }
-
-        return this;
+        return c;
     }
 }
